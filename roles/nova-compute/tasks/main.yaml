@@ -1,0 +1,53 @@
+---
+
+- name: ensure nova packages are installed
+  action: apt pkg={{ item }}
+  with_items:
+    - nova-compute-kvm
+    - python-guestfs
+
+- name: ensure nova packages are installed
+  action: apt pkg={{ item }}
+  with_items:
+    - nova-network
+    - nova-api-metadata
+  when: nova_network
+
+# https://bugs.launchpad.net/ubuntu/+source/linux/+bug/759725
+- name: Fix issue of non-readable kernel (759725)
+  shell: "dpkg-statoverride  --update --add root root 0644 /boot/vmlinuz-$(uname -r)"
+
+#- name: Make statoverride executable (759725)
+#  file: <
+#    path="/etc/kernel/postinst.d/statoverride"
+#    mode="0755"
+
+- name: make sure nova services are started
+  action: service name={{ item }} state=started
+  with_items:
+    - nova-compute
+
+- name: template nova configs
+  template: >
+    src=etc/nova/{{ item }}
+    dest=/etc/nova/{{ item }}
+    owner=nova
+    group=nova
+    mode=0640
+  with_items:
+    - nova.conf
+
+- name: remove sqlite database
+  file: path=/var/lib/nova/nova.sqlite state=absent
+
+- name: restart nova services
+  service: name={{ item }} state=restarted
+  with_items:
+    - nova-compute
+
+- name: restart nova services
+  service: name={{ item }} state=restarted
+  with_items:
+    - nova-network
+    - nova-api-metadata
+  when: nova_network

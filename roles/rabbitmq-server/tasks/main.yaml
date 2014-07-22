@@ -1,0 +1,25 @@
+---
+- name: ensure apt packages are installed
+  action: apt pkg=rabbitmq-server
+  environment:
+    LANG: "{{ locale }}"
+    LC_COLLATE: "{{ locale }}"
+    LC_CTYPE: "{{ locale }}"
+    LC_MESSAGES: "{{ locale }}"
+    LC_MONETARY: "{{ locale }}"
+    LC_NUMERIC: "{{ locale }}"
+    LC_TIMNE: "{{ locale }}"
+    LC_ALL: "{{ locale }}"
+
+- name: make sure rabbitmq is started
+  action: service name=rabbitmq-server state=started
+
+- name: delete rabbitmq guest user
+  rabbitmq_user: user=guest state=absent
+
+- name: set rabbitmq user and password
+  rabbitmq_user: >
+    user={{ rabbitmq_user }}
+    password={{ rabbitmq_password }}
+    configure_priv=.* read_priv=.* write_priv=.*
+  tags: rabbit

@@ -1,0 +1,22 @@
+---
+
+- name: Install OpenStack clients
+  apt: pkg={{ item }} state=present
+  with_items:
+    - python-ceilometerclient
+    - python-cinderclient
+    - python-glanceclient
+    - python-heatclient
+    - python-keystoneclient
+    - python-neutronclient
+    - python-novaclient
+    - python-swiftclient
+    - python-troveclient
+
+- name: Copy adminrc file
+  template: >
+    src=tmp/admin-openrc.sh
+    dest=/tmp/admin-openrc.sh
+    owner=root
+    group=root
+    mode=644

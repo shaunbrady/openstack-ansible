@@ -1,0 +1,24 @@
+---
+# for a in `cat passwd.yaml`;do echo -n $a; echo -n ": \""; echo `pwgen -1 -N 1`\"; done
+
+passwords:
+  ROOT_MYSQL: "baambaam"
+  RABBIT_PASS: "bophahph"
+  KEYSTONE_DBPASS: "aijeemod"
+  DEMO_PASS: "ahcaesah"
+  ADMIN_PASS: "chuerein"
+  GLANCE_DBPASS: "gaipahqu"
+  GLANCE_PASS: "looboovu"
+  NOVA_DBPASS: "kalaigul"
+  NOVA_PASS: "geebohxo"
+  DASH_DBPASS: "eifeutoo"
+  CINDER_DBPASS: "guziekah"
+  CINDER_PASS: "uenuleep"
+  NEUTRON_DBPASS: "theinaim"
+  NEUTRON_PASS: "aphiewut"
+  HEAT_DBPASS: "aeseigai"
+  HEAT_PASS: "ohquohwi"
+  CEILOMETER_DBPASS: "iezaseha"
+  CEILOMETER_PASS: "levaeghe"
+  TROVE_DBPASS: "aebiekak"
+  TROVE_PASS: "equohhue"

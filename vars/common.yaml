@@ -1,0 +1,8 @@
+---
+
+controller_ip: "10.10.0.2"
+controller_hostname: "controller"
+ADMIN_EMAIL: "shaun.brady@nimbisservices.com"
+DEMO_EMAIL: "shaun.brady+demo@nimbisservices.com"
+GLANCE_EMAIL: "shaun.brady+glance@nimbisservices.com"
+NOVA_EMAIL: "shaun.brady+nova@nimbisservices.com"

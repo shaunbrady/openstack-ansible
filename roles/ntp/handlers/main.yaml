@@ -1,0 +1,7 @@
+---
+- name: update debian timezone data
+  command: dpkg-reconfigure --frontend noninteractive tzdata
+
+- name: restart debian ntp service
+  service: name=ntp state=restarted
+  when: ansible_os_family == "Debian"

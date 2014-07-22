@@ -1,0 +1,59 @@
+---
+
+- name: fail when missing mysql_bind_address
+  fail: msg="missing value mysql_bind_address"
+  when: mysql_bind_address is not defined
+
+- name: fail when missing mysql_root_password
+  fail: msg="missing value mysql_root_password"
+  when: mysql_root_password is not defined
+
+- name: install mysql server packages
+  apt: pkg={{ item }} state=present
+  with_items:
+    - mysql-server
+
+- name: configure mysql on controller
+  template: >
+    src="etc/mysql/my.cnf"
+    dest="/etc/mysql/my.cnf"
+    owner="root"
+    group="root"
+    mode="0644"
+
+# Do this instead of mysql_secure_installation.  Thanks Lorin.
+# https://coderwall.com/p/yez9yw
+- name: ensure mysql is running and starts on boot
+  service: name=mysql state=started enabled=true
+
+# Need to do this for idempotency, see
+# http://ansible.cc/docs/modules.html#mysql-user
+
+- name: update mysql root password for all root accounts
+  mysql_user: name=root host=localhost password={{ mysql_root_password }}
+
+- name: copy .my.cnf file with root password credentials
+  template: >
+    src="root/.my.cnf"
+    dest="/root/.my.cnf"
+    owner="root"
+    mode="0600"
+
+- name: update mysql root password for all root accounts
+  mysql_user: name=root host={{ item }} password={{ mysql_root_password }}
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+
+- name: ensure anonymous users are not in the database
+  mysql_user: name='' host={{ item }} state=absent
+  with_items:
+    - localhost
+    - "{{ inventory_hostname }}"
+
+- name: remove the test database
+  mysql_db: name=test state=absent
+
+- name: restart mysql
+  service: name=mysql state=restarted

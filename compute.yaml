@@ -1,0 +1,92 @@
+---
+- name: configure controller
+  hosts: compute
+  remote_user: shaun
+  sudo: true
+  sudo_user: root
+  vars_files:
+    - vars/common.yaml
+    - vars/passwd.yaml
+    - vars/tokens.yaml
+  roles:
+    - {
+      role: base
+      }
+    - {
+      role: ntp,
+      ntp_controller: "controller"
+      }
+    - {
+      role: mysql-client,
+      }
+    - {
+      role: nova-compute,
+      is_compute: True,
+      compute_ip: "10.10.0.3"
+      }
+  tasks:
+    - name: flush handlers
+      meta: flush_handlers
+
+#- name: configure the network dhcp/dns server
+#  hosts: control
+#  remote_user: root
+#  roles:
+#    - {
+#      role: dnsmasq-setup,
+#      dnsmasq_iface_ignore: ['eth0'],
+#      dnsmasq_domain_force: true
+#      }
+#    - {
+#      role: platform-iface,
+#      platform_iface: "eth1",
+#      platform_proto: "static",
+#      platform_address: "192.168.10.1",
+#      platform_netmask: "255.255.255.0"
+#      }
+#    - {
+#      role: dnsmasq-network,
+#      dnsmasq_name: "compute",
+#      dnsmasq_domain: "compute.os",
+#      dnsmasq_network: "192.168.10.0/24",
+#      dnsmasq_dhcp_start: "192.168.10.100",
+#      dnsmasq_dhcp_stop: "192.168.10.150"
+#      }
+#    - {
+#      role: platform-iface,
+#      platform_iface: "eth2",
+#      platform_proto: "static",
+#      platform_address: "192.168.20.1",
+#      platform_netmask: "255.255.255.0"
+#      }
+#    - {
+#      role: dnsmasq-network,
+#      dnsmasq_name: "storage",
+#      dnsmasq_domain: "storage.os",
+#      dnsmasq_network: "192.168.20.0/24",
+#      dnsmasq_dhcp_start: "192.168.20.100",
+#      dnsmasq_dhcp_stop: "192.168.20.150"
+#      }
+#  tasks:
+#    - name: flush handlers
+#      meta: flush_handlers
+#
+#- name: configure network interfaces
+#  hosts:
+#    - network
+#    - compute
+#  remote_user: root
+#  roles:
+#    - {
+#      role: platform-iface,
+#      platform_iface: "eth1",
+#      platform_proto: "dhcp"
+#      }
+#    - {
+#      role: platform-iface,
+#      platform_iface: "eth2",
+#      platform_proto: "dhcp"
+#      }
+#  tasks:
+#    - name: flush handlers
+#      meta: flush_handlers

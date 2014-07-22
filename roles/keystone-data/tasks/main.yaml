@@ -1,0 +1,59 @@
+---
+
+- name: wait for a few seconds for keystone start up properly
+  pause: seconds=10
+
+# Create admin user/role/tenant
+- name: Create admin tenant
+  keystone_user: >
+    tenant="admin"
+    token={{ tokens.ADMIN }}
+
+- name: Create admin user
+  keystone_user: >
+    user="admin"
+    email={{ ADMIN_EMAIL }}
+    password={{ passwords.ADMIN_PASS }}
+    tenant="admin"
+    token={{ tokens.ADMIN }}
+
+- name: Add admin to admin tenant and admin role
+  keystone_user: >
+    user="admin"
+    role="admin"
+    tenant="admin"
+    token={{ tokens.ADMIN }}
+
+- name: Add admin to admin tenant and _member_ role
+  keystone_user: >
+    user="admin"
+    role="_member_"
+    tenant="admin"
+    token={{ tokens.ADMIN }}
+
+# Create demo user/role/tenant
+- name: Create demo tenant
+  keystone_user: >
+    tenant="demo"
+    token={{ tokens.ADMIN }}
+
+- name: Create demo user
+  keystone_user: >
+    user="demo"
+    email={{ DEMO_EMAIL }}
+    password={{ passwords.DEMO_PASS }}
+    tenant="demo"
+    token={{ tokens.ADMIN }}
+
+- name: Add demo to admin demo and _member_ role
+  keystone_user: >
+    user="demo"
+    role="_member_"
+    tenant="demo"
+    token={{ tokens.ADMIN }}
+
+# Create service user/role/tenant
+- name: Create service tenant
+  keystone_user: >
+    tenant="service"
+    token={{ tokens.ADMIN }}

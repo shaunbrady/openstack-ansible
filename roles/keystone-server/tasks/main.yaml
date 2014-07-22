@@ -1,0 +1,45 @@
+---
+
+- name: ensure keystone packages are installed
+  action: apt pkg=keystone
+
+- name: make sure keystone is started
+  action: service name=keystone state=started
+
+- name: template keystone.conf
+  template: >
+    src=etc/keystone/{{ item }}
+    dest=/etc/keystone/{{ item }}
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+    - keystone.conf
+
+- name: remove sqlite database
+  file: path=/var/lib/keystone/keystone.db state=absent
+
+- name: create keystone MySQL database
+  mysql_db: name=keystone state=present
+
+- name: create keystone MySQL accounts
+  mysql_user: >
+    name=keystone
+    host={{ item }}
+    password={{ passwords.KEYSTONE_DBPASS }}
+    priv=keystone.*:ALL
+  with_items:
+    - "localhost"
+    - "127.0.0.1"
+    - "%"
+
+# command doesn't work...
+- name: create keystone database table
+  shell: "su -s /bin/sh -c \"keystone-manage db_sync\" keystone"
+
+# Maybe a cronjob to clean up
+# (crontab -l -u keystone 2>&1 | grep -q token_flush) || \
+#echo '@hourly /usr/bin/keystone-manage token_flush >/var/log/keystone/keystone-tokenflush.log 2>&1' >> /var/spool/cron/crontabs/keystone
+
+- name: restart keystone
+  service: name=keystone state=restarted

@@ -1,0 +1,2 @@
+# set the timezone
+platform_timezone: "Etc/UTC"
