@@ -1,3 +1,4 @@
 ---
 
 nova_network: True
+virt_type: "kvm"

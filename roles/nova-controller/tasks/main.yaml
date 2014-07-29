@@ -93,3 +93,12 @@
     - nova-scheduler
     - nova-conductor
     - nova-novncproxy
+
+# Note as of now, we don't catch the private part
+- name: demo keypair gen
+  nova_keypair: >
+    state=present
+    login_username=demo
+    login_password={{ passwords.DEMO_PASS }}
+    login_tenant_name=demo
+    name=demo-key

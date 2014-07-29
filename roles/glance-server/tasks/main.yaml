@@ -82,3 +82,16 @@
   with_items:
     - glance-registry
     - glance-api
+
+- name: wait for a few seconds for glance start up properly
+  pause: seconds=10
+
+- name: Put up test image
+  glance_image: login_username=admin
+                login_password={{ passwords.ADMIN_PASS }}
+                login_tenant_name=admin
+                name="cirros-0.3.2-x86_64"
+                container_format=bare
+                disk_format=qcow2
+                state=present
+                copy_from=http://cdn.download.cirros-cloud.net/0.3.2/cirros-0.3.2-x86_64-disk.img

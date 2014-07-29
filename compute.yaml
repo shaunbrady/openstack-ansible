@@ -1,5 +1,5 @@
 ---
-- name: configure controller
+- name: configure compute
   hosts: compute
   remote_user: shaun
   sudo: true
@@ -22,7 +22,7 @@
     - {
       role: nova-compute,
       is_compute: True,
-      compute_ip: "10.10.0.3"
+      virt_type: "qemu"
       }
   tasks:
     - name: flush handlers

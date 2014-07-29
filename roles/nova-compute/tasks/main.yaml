@@ -15,7 +15,7 @@
 
 # https://bugs.launchpad.net/ubuntu/+source/linux/+bug/759725
 - name: Fix issue of non-readable kernel (759725)
-  shell: "dpkg-statoverride  --update --add root root 0644 /boot/vmlinuz-$(uname -r)"
+  shell: "dpkg-statoverride  --update --add root root 0644 /boot/vmlinuz-$(uname -r) || exit 0"
 
 #- name: Make statoverride executable (759725)
 #  file: <
@@ -36,6 +36,7 @@
     mode=0640
   with_items:
     - nova.conf
+    - nova-compute.conf
 
 - name: remove sqlite database
   file: path=/var/lib/nova/nova.sqlite state=absent
